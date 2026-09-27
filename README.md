@@ -2,6 +2,8 @@
 
 Aplicación web que convierte documentos (PDF, Word, texto o URLs) en infografías tipo póster usando IA.
 
+https://infografia-pdf.netlify.app/
+
 ## Características
 
 - 📄 Soporta PDF, DOCX, TXT, MD, HTML y URLs (vía Jina Reader)
@@ -32,10 +34,4 @@ Aplicación web que convierte documentos (PDF, Word, texto o URLs) en infografí
 | DeepSeek | ❌ | ❌ |
 | OpenAI | ❌ | ❌ |
 
-## Despliegue
 
-Súbelo a Netlify, Vercel o Cloudflare Pages. Es un único HTML estático.
-
-## Licencia
-
-MIT
