@@ -20,9 +20,67 @@
   .container { max-width: 1100px; margin: 0 auto; }
   h1 { font-size: 1.6rem; margin: 0 0 4px; }
   .sub { color: var(--app-muted); margin: 0 0 24px; font-size: .95rem; }
+
+  /* Aviso de privacidad */
+  .privacy-banner {
+    background: #ecfdf5; border: 1px solid #a7f3d0; color: #064e3b;
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
+    font-size: .85rem; line-height: 1.45;
+  }
+  body[data-theme="dark"] .privacy-banner {
+    background: #064e3b; border-color: #10b981; color: #d1fae5;
+  }
+  .privacy-banner strong { display: block; margin-bottom: 4px; font-size: .9rem; }
+  .privacy-banner ul { margin: 6px 0 0; padding-left: 20px; }
+  .privacy-banner li { margin-bottom: 2px; }
+
   .panel { background: var(--app-card); border-radius: 12px; padding: 20px;
     margin-bottom: 20px; border: 1px solid var(--app-border); }
-  label { display: block; font-size: .9rem; margin-bottom: 6px; color: var(--app-muted); }
+
+  /* Label con icono de ayuda */
+  .label-row {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 6px;
+  }
+  .label-row label { margin: 0; font-size: .9rem; color: var(--app-muted); }
+  .help-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--app-muted); color: var(--app-card);
+    font-size: 11px; font-weight: 700; cursor: help;
+    position: relative; user-select: none;
+    flex-shrink: 0;
+  }
+  .help-icon:hover, .help-icon:focus {
+    background: var(--accent); color: white;
+  }
+  .help-icon .tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b; color: #f8fafc;
+    padding: 10px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 400; line-height: 1.5;
+    width: 320px; max-width: calc(100vw - 40px);
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    pointer-events: none; opacity: 0; visibility: hidden;
+    transition: opacity .15s, visibility .15s;
+    z-index: 1000; text-align: left;
+    white-space: normal;
+  }
+  .help-icon .tooltip::after {
+    content: ""; position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1e293b;
+  }
+  .help-icon:hover .tooltip,
+  .help-icon:focus .tooltip { opacity: 1; visibility: visible; }
+  .help-icon .tooltip a { color: #93c5fd; text-decoration: underline; }
+  .help-icon .tooltip code {
+    background: #334155; padding: 1px 5px; border-radius: 3px;
+    font-size: 11px;
+  }
+
   input, select, textarea { width: 100%; padding: 10px; border-radius: 8px;
     border: 1px solid var(--app-border); background: var(--app-bg); color: var(--app-text);
     margin-bottom: 16px; font-size: .95rem; font-family: inherit; }
@@ -68,6 +126,15 @@
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
+
+  /* Footer informativo */
+  .footer-info {
+    margin-top: 32px; padding: 20px; border-top: 1px solid var(--app-border);
+    color: var(--app-muted); font-size: .82rem; line-height: 1.6;
+  }
+  .footer-info h3 { color: var(--app-text); font-size: .95rem; margin: 0 0 8px; }
+  .footer-info ul { margin: 0 0 12px; padding-left: 18px; }
+  .footer-info a { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -79,29 +146,86 @@
   <h1>Documento → Infografía visual</h1>
   <p class="sub">Sube un PDF/Word/texto o pega una URL. La IA analiza y genera una infografía tipo póster.</p>
 
+  <!-- AVISO DE PRIVACIDAD -->
+  <div class="privacy-banner">
+    <strong>🔒 Tu privacidad, garantizada</strong>
+    <ul>
+      <li><strong>No se guardan tus apuntes</strong>: el archivo se procesa en tu navegador y se envía directamente al proveedor de IA que elijas. Este sitio no almacena nada.</li>
+      <li><strong>No se guardan las infografías generadas</strong>: al cerrar la pestaña desaparecen. Descárgalas en PNG o HTML antes de salir.</li>
+      <li><strong>No se guarda tu API key</strong>: la escribes en tu navegador y solo se usa para llamar al proveedor. Al recargar la página desaparece.</li>
+      <li>Si escribes instrucciones adicionales, se guardan <em>temporalmente en tu propio navegador</em> (localStorage) para no perderlas al recargar. Puedes borrarlas limpiando la caché del navegador.</li>
+    </ul>
+  </div>
+
   <div class="panel">
     <div class="row">
       <div>
-        <label for="proveedor">Proveedor</label>
+        <div class="label-row">
+          <label for="proveedor">Proveedor de IA</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Elige el servicio de IA que procesará tu documento. Cada uno tiene ventajas distintas:<br><br>
+              • <b>Google Gemini</b>: el mejor. Acepta PDF directamente (incluye imágenes y tablas del PDF). Requiere API key gratuita.<br>
+              • <b>Groq</b>: muy rápido, gratis, buena calidad. Extrae el texto del PDF antes.<br>
+              • <b>OpenRouter</b>: agrega muchos modelos, algunos gratis.<br>
+              • <b>DeepSeek</b>: económico pero de pago.<br>
+              • <b>OpenAI</b>: la más conocida pero de pago.<br><br>
+              <b>Recomendación</b>: empieza con Gemini o Groq (ambos gratis).
+            </span>
+          </span>
+        </div>
         <select id="proveedor">
-          <option value="gemini">Google Gemini (soporta PDF nativo)</option>
-          <option value="groq">Groq (GPT-OSS / Qwen)</option>
+          <option value="gemini">Google Gemini (recomendado · soporta PDF nativo)</option>
+          <option value="groq">Groq (rápido · gratis)</option>
           <option value="openrouter">OpenRouter</option>
           <option value="deepseek">DeepSeek</option>
           <option value="openai">OpenAI</option>
         </select>
       </div>
       <div>
-        <label for="modelo">Modelo</label>
+        <div class="label-row">
+          <label for="modelo">Modelo</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Modelo concreto a usar dentro del proveedor. Los primeros de la lista suelen ser los mejores.<br><br>
+              Si un modelo falla (por cuota agotada, error del servidor...), la app prueba automáticamente con los siguientes hasta que uno funcione.
+            </span>
+          </span>
+        </div>
         <select id="modelo"></select>
       </div>
     </div>
 
-    <label for="apiKey">API key del proveedor</label>
-    <input type="password" id="apiKey" placeholder="Pega tu API key">
+    <div class="label-row">
+      <label for="apiKey">API key</label>
+      <span class="help-icon" tabindex="0">?
+        <span class="tooltip" id="tooltipKey">
+          Clave personal que te identifica ante el proveedor. <b>No se guarda en ningún servidor</b>, solo se usa para la petición y se descarta.<br><br>
+          Cómo conseguirla según el proveedor:<br>
+          • <b>Gemini</b>: <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> (gratis, sin tarjeta)<br>
+          • <b>Groq</b>: <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (gratis, sin tarjeta)<br>
+          • <b>OpenRouter</b>: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> (gratis con límites, algunos modelos de pago)<br>
+          • <b>DeepSeek</b>: <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a> (de pago)<br>
+          • <b>OpenAI</b>: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a> (de pago)<br><br>
+          <b>Consejo</b>: con Gemini o Groq puedes usar la app gratis indefinidamente.
+        </span>
+      </span>
+    </div>
+    <input type="password" id="apiKey" placeholder="Pega tu API key aquí (empieza por AIza... para Gemini, gsk_... para Groq)">
     <p class="hint" id="keyHint"></p>
 
-    <label>Fuente del contenido</label>
+    <div class="label-row">
+      <label>Fuente del contenido</label>
+      <span class="help-icon" tabindex="0">?
+        <span class="tooltip">
+          Puedes subir un archivo, pegar una URL o escribir el texto directamente.<br><br>
+          • <b>Archivo</b>: PDF, Word (.docx), texto (.txt, .md) o HTML.<br>
+          • <b>URL</b>: extrae el contenido de una página web pública mediante Jina Reader. No funciona con webs que requieren login o están tras un paywall.<br>
+          • <b>Texto pegado</b>: pega directamente el contenido que quieras convertir en infografía.<br><br>
+          El archivo se lee en tu navegador. Si el proveedor no acepta PDF (como Groq), el texto se extrae localmente y se envía como texto plano.
+        </span>
+      </span>
+    </div>
     <div class="tabs">
       <button class="tab active" data-tab="file">📄 Archivo</button>
       <button class="tab" data-tab="url">🔗 URL</button>
@@ -110,21 +234,50 @@
 
     <div class="tab-content active" id="tab-file">
       <input type="file" id="docFile" accept=".pdf,.docx,.doc,.txt,.md,.html,.htm">
-      <p class="hint">Formatos: PDF, Word (.docx), texto (.txt, .md), HTML.</p>
+      <p class="hint">Formatos: PDF, Word (.docx), texto (.txt, .md), HTML. Los .doc antiguos no están soportados.</p>
     </div>
 
     <div class="tab-content" id="tab-url">
       <input type="url" id="urlInput" placeholder="https://ejemplo.com/articulo">
-      <p class="hint">Usa Jina Reader para extraer el texto.</p>
+      <p class="hint">Usa Jina Reader para extraer el texto de la URL.</p>
     </div>
 
     <div class="tab-content" id="tab-text">
-      <textarea id="textInput" placeholder="Pega aquí el texto..." rows="6"></textarea>
+      <textarea id="textInput" placeholder="Pega aquí el texto que quieres convertir en infografía..." rows="6"></textarea>
     </div>
+
+    <div class="label-row">
+      <label for="instruccionesExtra">Instrucciones adicionales (opcional)</label>
+      <span class="help-icon" tabindex="0">?
+        <span class="tooltip">
+          Aquí puedes darle instrucciones específicas a la IA sobre qué hacer con el contenido. Se aplican en las 3 fases del proceso.<br><br>
+          Ejemplos útiles:<br>
+          • "Céntrate solo en economía circular y ecodiseño, ignora la parte de historia"<br>
+          • "Incluye obligatoriamente un bloque sobre la huella de carbono"<br>
+          • "Prioriza los datos numéricos y evita párrafos largos"<br>
+          • "Usa un tono divulgativo, como para estudiantes de instituto"<br>
+          • "No uses más de 6 bloques, quiero algo compacto"<br><br>
+          Si lo dejas vacío, la IA decide libremente.<br><br>
+          <b>Se guardan en tu navegador</b> (localStorage) para no perderlas al recargar.
+        </span>
+      </span>
+    </div>
+    <textarea id="instruccionesExtra" placeholder="Ejemplo: céntrate solo en economía circular y ecodiseño. No te dejes el concepto de huella de carbono." rows="3"></textarea>
 
     <div class="row">
       <div>
-        <label for="formato">Formato</label>
+        <div class="label-row">
+          <label for="formato">Formato</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Proporción de la infografía.<br><br>
+              • <b>Vertical</b>: A4 retrato. Ideal para imprimir o leer en el móvil.<br>
+              • <b>Horizontal</b>: apaisado 16:9. Ideal para presentaciones y proyectores.<br>
+              • <b>Cuadrado</b>: 1:1. Ideal para redes sociales (Instagram, LinkedIn).<br><br>
+              Cada formato cambia la disposición de los bloques para aprovechar el espacio.
+            </span>
+          </span>
+        </div>
         <select id="formato">
           <option value="vertical" selected>Vertical (A4 retrato)</option>
           <option value="horizontal">Horizontal (apaisado 16:9)</option>
@@ -132,7 +285,19 @@
         </select>
       </div>
       <div>
-        <label for="estilo">Tema visual de la infografía</label>
+        <div class="label-row">
+          <label for="estilo">Tema visual</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Paleta de colores de la infografía. No afecta al contenido, solo al aspecto visual.<br><br>
+              • <b>Verde naturaleza</b>: tonos verdes suaves. Bueno para temas ambientales o biología.<br>
+              • <b>Azul corporativo</b>: sobrio y profesional. Ideal para empresa o tecnología.<br>
+              • <b>Morado moderno</b>: llamativo. Bueno para temas creativos o divulgativos.<br>
+              • <b>Naranja cálido</b>: energético. Para temas de historia o humanidades.<br>
+              • <b>Oscuro premium</b>: fondo negro con acentos. Para presentaciones o diseño.
+            </span>
+          </span>
+        </div>
         <select id="estilo">
           <option value="verde">Verde naturaleza</option>
           <option value="azul">Azul corporativo</option>
@@ -145,7 +310,18 @@
 
     <div class="row">
       <div>
-        <label for="detalle">Nivel de detalle</label>
+        <div class="label-row">
+          <label for="detalle">Nivel de detalle</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Cuánta información incluir en la infografía.<br><br>
+              • <b>Medio (9-11 bloques)</b>: equilibrado. Una página, fácil de leer de un vistazo.<br>
+              • <b>Detallado (12-16 bloques)</b>: contenido completo sin saturar. Requiere más scroll.<br>
+              • <b>Exhaustivo (16-22 bloques)</b>: máximo aprovechamiento. Útil para temas muy densos.<br><br>
+              Si tu PDF es corto, el nivel exhaustivo puede forzar a la IA a inventar contenido. En ese caso usa medio o detallado.
+            </span>
+          </span>
+        </div>
         <select id="detalle">
           <option value="medio" selected>Medio · 9-11 bloques</option>
           <option value="detallado">Detallado · 12-16 bloques</option>
@@ -153,7 +329,15 @@
         </select>
       </div>
       <div>
-        <label for="idioma">Idioma de salida</label>
+        <div class="label-row">
+          <label for="idioma">Idioma de salida</label>
+          <span class="help-icon" tabindex="0">?
+            <span class="tooltip">
+              Idioma en el que se escribirá toda la infografía, independientemente del idioma original del documento.<br><br>
+              Por ejemplo: puedes subir un PDF en inglés y generar la infografía en español. La IA traduce automáticamente el contenido.
+            </span>
+          </span>
+        </div>
         <select id="idioma">
           <option value="español" selected>Español</option>
           <option value="inglés">Inglés</option>
@@ -179,6 +363,28 @@
     <button onclick="downloadPNG()">Descargar PNG</button>
     <button onclick="downloadHTML()">Descargar HTML</button>
     <button onclick="resetApp()">Nueva infografía</button>
+  </div>
+
+  <!-- INFO ADICIONAL AL PIE -->
+  <div class="footer-info">
+    <h3>❓ Preguntas frecuentes</h3>
+    <ul>
+      <li><b>¿Se guardan mis apuntes en algún servidor?</b> No. El archivo se procesa en tu navegador y se envía directamente al proveedor de IA que elijas. Esta web no tiene backend ni base de datos.</li>
+      <li><b>¿Se guarda mi API key?</b> No. Solo vive en la memoria del navegador mientras la pestaña está abierta. Al recargar, se borra.</li>
+      <li><b>¿Se guardan las infografías?</b> No. Al cerrar la pestaña desaparecen. Descárgalas en PNG o HTML antes de salir.</li>
+      <li><b>¿Qué pasa si un modelo falla?</b> La app prueba automáticamente con los siguientes modelos del mismo proveedor hasta que uno funcione.</li>
+      <li><b>¿Puedo usar la app sin pagar?</b> Sí, con Gemini o Groq (ambos ofrecen cuota gratuita generosa). Los demás proveedores son de pago.</li>
+      <li><b>¿Cuántas infografías puedo generar al día?</b> Depende del proveedor. Gemini free permite ~20-500 peticiones/día según el modelo. Groq tiene límites similares. Si se agota, espera al día siguiente o cambia a otro proveedor.</li>
+      <li><b>¿Puedo editar la infografía después?</b> Sí. Descarga el HTML y edítalo con cualquier editor de texto (Notepad++, VS Code) o con un editor visual.</li>
+    </ul>
+    <h3 style="margin-top: 16px;">🔗 Cómo conseguir tu API key</h3>
+    <ul>
+      <li><b>Google Gemini</b> (gratis): <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></li>
+      <li><b>Groq</b> (gratis): <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a></li>
+      <li><b>OpenRouter</b> (algunos modelos gratis): <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></li>
+      <li><b>DeepSeek</b> (de pago): <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a></li>
+      <li><b>OpenAI</b> (de pago): <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></li>
+    </ul>
   </div>
 </div>
 
@@ -219,6 +425,16 @@ themeToggle.addEventListener("click", () => {
 });
 aplicarTema((function(){ try { return localStorage.getItem("appTheme") || "light"; } catch(e){ return "light"; } })());
 
+// ---------- INSTRUCCIONES EXTRA ----------
+const instruccionesExtraEl = document.getElementById("instruccionesExtra");
+const STORAGE_KEY_INSTR = "instruccionesExtra";
+instruccionesExtraEl.value = (function(){
+  try { return localStorage.getItem(STORAGE_KEY_INSTR) || ""; } catch(e){ return ""; }
+})();
+instruccionesExtraEl.addEventListener("input", () => {
+  try { localStorage.setItem(STORAGE_KEY_INSTR, instruccionesExtraEl.value); } catch (e) {}
+});
+
 // ---------- TABS ----------
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
@@ -234,7 +450,7 @@ const PROVEEDORES = {
   gemini: {
     nombre: "Google Gemini", formato: "gemini",
     endpoint: "https://generativelanguage.googleapis.com/v1beta/models",
-    modelos: ["gemini-3.5-flash","gemini-3-flash-preview","gemini-3.7-flash","gemini-3.6-flash","gemini-3.1-flash-lite"],
+    modelos: ["gemini-3.5-flash","gemini-3-flash-preview","gemini-3.5-flash-lite","gemini-3.1-flash-lite"],
     pdfNativo: true, requiereKey: true,
     keyUrl: "https://aistudio.google.com/apikey"
   },
@@ -427,10 +643,14 @@ async function callConFallback(proveedor, apiKey, prompt, pdfBase64, onStatus) {
 }
 
 // ---------- PROMPTS ----------
-function buildPromptAnalisis(idioma) {
+function buildPromptAnalisis(idioma, instrucciones) {
+  const bloqueInstrucciones = instrucciones && instrucciones.trim()
+    ? `\n\n═══ INSTRUCCIONES ADICIONALES DEL USUARIO (PRIORIDAD MÁXIMA) ═══\n${instrucciones.trim()}\n═══ FIN DE INSTRUCCIONES ADICIONALES ═══\n\nDEBES respetar estas instrucciones por encima de las reglas generales. Si el usuario pide ignorar ciertos temas, NO los incluyas. Si pide centrarte en algo, priorízalo.`
+    : "";
+
   return `Eres un extractor de datos. Tu ÚNICA salida debe ser un objeto JSON válido, sin texto antes ni después, sin markdown.
 
-El contenido de entrada puede estar en CUALQUIER idioma. Debes ANALIZARLO, ENTENDERLO y devolver el JSON con TODO EL CONTENIDO TRADUCIDO AL ${idioma.toUpperCase()}.
+El contenido de entrada puede estar en CUALQUIER idioma. Debes ANALIZARLO, ENTENDERLO y devolver el JSON con TODO EL CONTENIDO TRADUCIDO AL ${idioma.toUpperCase()}.${bloqueInstrucciones}
 
 FORMATO EXACTO:
 {
@@ -445,18 +665,22 @@ FORMATO EXACTO:
 
 REGLAS:
 - Traduce TODOS los textos al ${idioma}.
-- Extrae TODA la información relevante del contenido.
+- Extrae TODA la información relevante del contenido (respetando las instrucciones adicionales si las hay).
 - "puntos_clave": máx 12 palabras cada uno. Hasta 6 por sección.
 - "tipo" solo: concepto, proceso, datos, comparacion, lista.
 - Incluye TODAS las cifras relevantes en "cifras_destacadas".
 - Empieza con { y termina con }. Nada más.`;
 }
 
-function buildPromptArquitectura(detalle, idioma, formato, contextoTexto) {
+function buildPromptArquitectura(detalle, idioma, formato, contextoTexto, instrucciones) {
   const r = RANGOS_DETALLE[detalle] || RANGOS_DETALLE.medio;
   const f = FORMATOS[formato] || FORMATOS.vertical;
 
-  return `A partir del siguiente contenido, diseña la ARQUITECTURA de una infografía tipo póster.
+  const bloqueInstrucciones = instrucciones && instrucciones.trim()
+    ? `\n\n═══ INSTRUCCIONES ADICIONALES DEL USUARIO (PRIORIDAD MÁXIMA) ═══\n${instrucciones.trim()}\n═══ FIN DE INSTRUCCIONES ADICIONALES ═══\n\nRESPETA estas instrucciones por encima de las reglas generales. Si pide incluir ciertos temas, DEBES incluirlos. Si pide excluir otros, NO los incluyas.`
+    : "";
+
+  return `A partir del siguiente contenido, diseña la ARQUITECTURA de una infografía tipo póster.${bloqueInstrucciones}
 
 IDIOMA OBLIGATORIO DE SALIDA: ${idioma.toUpperCase()}.
 Todos los textos visibles deben estar en ${idioma}.
@@ -471,8 +695,7 @@ La arquitectura se estructura en FILAS. Cada fila contiene 1-4 bloques que se co
 HORIZONTALMENTE uno al lado del otro.
 
 IMPORTANTE: CADA bloque DEBE tener un "titulo" NO VACÍO. NUNCA dejes el título vacío.
-Si un bloque no tiene un título temático claro, usa uno genérico apropiado al contenido,
-por ejemplo: "Datos clave", "Contexto", "Indicadores", "Comparativa".
+Si un bloque no tiene un título temático claro, usa uno genérico apropiado al contenido.
 
 ═══════════════════════════════════════════
 
@@ -554,11 +777,15 @@ CONTENIDO A ANALIZAR:
 ${contextoTexto}`;
 }
 
-function buildPromptHTML(arq, tema, idioma, formato) {
+function buildPromptHTML(arq, tema, idioma, formato, instrucciones) {
   const t = TEMAS[tema] || TEMAS.verde;
   const f = FORMATOS[formato] || FORMATOS.vertical;
 
-  return `Eres un maquetador HTML/CSS experto. Recibirás una arquitectura JSON con FILAS. Devuelve SOLO el HTML del CONTENIDO INTERNO.
+  const bloqueInstrucciones = instrucciones && instrucciones.trim()
+    ? `\n\nINSTRUCCIONES ADICIONALES DEL USUARIO:\n${instrucciones.trim()}\n`
+    : "";
+
+  return `Eres un maquetador HTML/CSS experto. Recibirás una arquitectura JSON con FILAS. Devuelve SOLO el HTML del CONTENIDO INTERNO.${bloqueInstrucciones}
 
 FORMATO: ${f.ratio}.
 IDIOMA: todos los textos visibles en ${idioma}.
@@ -586,9 +813,7 @@ ESTRUCTURA DEL HTML:
       <p class="block-subtitle">...</p>
       ...contenido...
     </section>
-    ...
   </div>
-  ...
 </div>
 <footer class="foot"> ... </footer>
 
@@ -607,8 +832,8 @@ ICONOS SVG OBLIGATORIOS:
 - Cabecera: <svg class="hero-deco"> decorativo.
 
 GRÁFICOS:
-- Donut: SVG con viewBox, sin width/height fijos. NO uses linearGradient en el SVG del donut (solo stroke sólido), para que html2canvas no falle al exportar.
-- Barras: NO uses linear-gradient en CSS. Usa color sólido de fondo (background: <primary>) para que html2canvas no falle.
+- Donut: SVG con viewBox, sin width/height fijos. NO uses linearGradient.
+- Barras: NO uses linear-gradient en CSS. Color sólido.
 - Porcentaje al lado de cada barra.
 
 ARQUITECTURA:
@@ -835,7 +1060,7 @@ function getPlantillaCSS(tema, formato) {
   `;
 }
 
-// ---------- NORMALIZACIÓN: rellenar títulos vacíos + sanear gradientes ----------
+// ---------- NORMALIZACIÓN ----------
 function normalizarFilas(htmlContenido, formato) {
   const doc = document.implementation.createHTMLDocument("");
   const wrapper = doc.createElement("div");
@@ -844,7 +1069,6 @@ function normalizarFilas(htmlContenido, formato) {
   const filas = wrapper.querySelector(".filas");
   if (!filas) return htmlContenido;
 
-  // Rellenar títulos vacíos en cada bloque
   const bloques = filas.querySelectorAll(".block");
   const TITULOS_POR_TIPO = {
     "block-lista": "Puntos clave",
@@ -859,17 +1083,14 @@ function normalizarFilas(htmlContenido, formato) {
   };
 
   bloques.forEach(b => {
-    // Quitar clases block-N por si acaso
     Array.from(b.classList).forEach(c => { if (/^block-\d+$/.test(c)) b.classList.remove(c); });
 
     const titulo = b.querySelector(".block-title");
     if (titulo) {
-      // Obtener solo el texto (sin el svg)
       const svg = titulo.querySelector("svg");
       const svgHtml = svg ? svg.outerHTML : "";
       const texto = titulo.textContent.trim();
       if (!texto) {
-        // Elegir título según la clase del bloque
         let tipo = "";
         b.classList.forEach(c => { if (TITULOS_POR_TIPO[c]) tipo = c; });
         const nuevoTitulo = TITULOS_POR_TIPO[tipo] || "Sección";
@@ -878,8 +1099,6 @@ function normalizarFilas(htmlContenido, formato) {
     }
   });
 
-  // Sanear gradientes que rompen html2canvas
-  // - Quitar linear-gradient y radial-gradient de estilos inline
   const conEstiloInline = wrapper.querySelectorAll("[style]");
   conEstiloInline.forEach(el => {
     const s = el.getAttribute("style");
@@ -906,7 +1125,7 @@ function actualizarModelos() {
   });
   const hint = document.getElementById("keyHint");
   hint.innerHTML = `Consigue tu key en <a href="${cfg.keyUrl}" target="_blank">${cfg.keyUrl}</a>` +
-    (cfg.pdfNativo ? "" : " · Este proveedor no acepta PDF directo; se extraerá el texto del PDF localmente.");
+    (cfg.pdfNativo ? "" : " · Este proveedor no acepta PDF directo; se extraerá el texto localmente.");
 }
 document.getElementById("proveedor").addEventListener("change", actualizarModelos);
 actualizarModelos();
@@ -919,6 +1138,7 @@ document.getElementById("generateBtn").onclick = async () => {
   const detalle = document.getElementById("detalle").value;
   const idioma = document.getElementById("idioma").value;
   const formato = document.getElementById("formato").value;
+  const instrucciones = document.getElementById("instruccionesExtra").value;
   const status = document.getElementById("status");
   const btn = document.getElementById("generateBtn");
   const cfg = PROVEEDORES[proveedor];
@@ -964,7 +1184,7 @@ document.getElementById("generateBtn").onclick = async () => {
     }
 
     setStatus("🧠 Fase 1/3 · Analizando contenido...");
-    const promptAnalisis = buildPromptAnalisis(idioma);
+    const promptAnalisis = buildPromptAnalisis(idioma, instrucciones);
     const textoParaAnalisis = hayPDFnativo
       ? promptAnalisis
       : promptAnalisis + "\n\nCONTENIDO:\n" + textoFuente.slice(0, 8000) +
@@ -976,14 +1196,14 @@ document.getElementById("generateBtn").onclick = async () => {
     const jsonLimpio = extraerJSON(jsonTexto);
 
     setStatus("📐 Fase 2/3 · Diseñando arquitectura...");
-    const promptArq = buildPromptArquitectura(detalle, idioma, formato, jsonLimpio);
+    const promptArq = buildPromptArquitectura(detalle, idioma, formato, jsonLimpio, instrucciones);
     const { text: arqTexto, model: m2 } = await callConFallback(
       proveedor, apiKey, promptArq, null, setStatus
     );
     const arqLimpia = extraerJSON(arqTexto);
 
     setStatus("🎨 Fase 3/3 · Generando HTML...");
-    const promptHTML = buildPromptHTML(arqLimpia, tema, idioma, formato);
+    const promptHTML = buildPromptHTML(arqLimpia, tema, idioma, formato, instrucciones);
     const { text: htmlCrudo, model: m3 } = await callConFallback(
       proveedor, apiKey, promptHTML, null, setStatus
     );
@@ -1045,7 +1265,6 @@ async function downloadPNG() {
   const status = document.getElementById("status");
   try {
     status.textContent = "🖼️ Generando PNG...";
-    // Clonar el wrapper y sanear gradientes en el clon para evitar errores de html2canvas
     const clon = wrap.cloneNode(true);
     clon.querySelectorAll("[style]").forEach(el => {
       const s = el.getAttribute("style");
