@@ -164,22 +164,14 @@
           <label for="proveedor">Proveedor de IA</label>
           <span class="help-icon" tabindex="0">?
             <span class="tooltip">
-              Elige el servicio de IA que procesará tu documento. Cada uno tiene ventajas distintas:<br><br>
-              • <b>Google Gemini</b>: el mejor. Acepta PDF directamente (incluye imágenes y tablas del PDF). Requiere API key gratuita.<br>
-              • <b>Groq</b>: muy rápido, gratis, buena calidad. Extrae el texto del PDF antes.<br>
-              • <b>OpenRouter</b>: agrega muchos modelos, algunos gratis.<br>
-              • <b>DeepSeek</b>: económico pero de pago.<br>
-              • <b>OpenAI</b>: la más conocida pero de pago.<br><br>
-              <b>Recomendación</b>: empieza con Gemini o Groq (ambos gratis).
+              Elige el servicio de IA que procesará tu documento.<br><br>
+              • <b>Google Gemini</b>: el mejor. Acepta PDF directamente (incluye imágenes y tablas del PDF). Requiere API key gratuita.<br><br>
+              <b>Recomendación</b>: usa Gemini (gratis, soporta PDF nativo).
             </span>
           </span>
         </div>
         <select id="proveedor">
           <option value="gemini">Google Gemini (recomendado · soporta PDF nativo)</option>
-          <option value="groq">Groq (rápido · gratis)</option>
-          <option value="openrouter">OpenRouter</option>
-          <option value="deepseek">DeepSeek</option>
-          <option value="openai">OpenAI</option>
         </select>
       </div>
       <div>
@@ -202,16 +194,12 @@
         <span class="tooltip" id="tooltipKey">
           Clave personal que te identifica ante el proveedor. <b>No se guarda en ningún servidor</b>, solo se usa para la petición y se descarta.<br><br>
           Cómo conseguirla según el proveedor:<br>
-          • <b>Gemini</b>: <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> (gratis, sin tarjeta)<br>
-          • <b>Groq</b>: <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (gratis, sin tarjeta)<br>
-          • <b>OpenRouter</b>: <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> (gratis con límites, algunos modelos de pago)<br>
-          • <b>DeepSeek</b>: <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a> (de pago)<br>
-          • <b>OpenAI</b>: <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a> (de pago)<br><br>
-          <b>Consejo</b>: con Gemini o Groq puedes usar la app gratis indefinidamente.
+          • <b>Gemini</b>: <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a> (gratis, sin tarjeta)<br><br>
+          <b>Consejo</b>: con Gemini puedes usar la app gratis indefinidamente.
         </span>
       </span>
     </div>
-    <input type="password" id="apiKey" placeholder="Pega tu API key aquí (empieza por AIza... para Gemini, gsk_... para Groq)">
+    <input type="password" id="apiKey" placeholder="Pega tu API key aquí (empieza por AIza... para Gemini)">
     <p class="hint" id="keyHint"></p>
 
     <div class="label-row">
@@ -222,7 +210,7 @@
           • <b>Archivo</b>: PDF, Word (.docx), texto (.txt, .md) o HTML.<br>
           • <b>URL</b>: extrae el contenido de una página web pública mediante Jina Reader. No funciona con webs que requieren login o están tras un paywall.<br>
           • <b>Texto pegado</b>: pega directamente el contenido que quieras convertir en infografía.<br><br>
-          El archivo se lee en tu navegador. Si el proveedor no acepta PDF (como Groq), el texto se extrae localmente y se envía como texto plano.
+          El archivo se lee en tu navegador. El texto se extrae localmente y se envía como texto plano si es necesario.
         </span>
       </span>
     </div>
@@ -373,17 +361,13 @@
       <li><b>¿Se guarda mi API key?</b> No. Solo vive en la memoria del navegador mientras la pestaña está abierta. Al recargar, se borra.</li>
       <li><b>¿Se guardan las infografías?</b> No. Al cerrar la pestaña desaparecen. Descárgalas en PNG o HTML antes de salir.</li>
       <li><b>¿Qué pasa si un modelo falla?</b> La app prueba automáticamente con los siguientes modelos del mismo proveedor hasta que uno funcione.</li>
-      <li><b>¿Puedo usar la app sin pagar?</b> Sí, con Gemini o Groq (ambos ofrecen cuota gratuita generosa). Los demás proveedores son de pago.</li>
-      <li><b>¿Cuántas infografías puedo generar al día?</b> Depende del proveedor. Gemini free permite ~20-500 peticiones/día según el modelo. Groq tiene límites similares. Si se agota, espera al día siguiente o cambia a otro proveedor.</li>
+      <li><b>¿Puedo usar la app sin pagar?</b> Sí, con Gemini (cuota gratuita generosa).</li>
+      <li><b>¿Cuántas infografías puedo generar al día?</b> Depende del modelo. Gemini free permite ~20-500 peticiones/día según el modelo. Si se agota, espera al día siguiente.</li>
       <li><b>¿Puedo editar la infografía después?</b> Sí. Descarga el HTML y edítalo con cualquier editor de texto (Notepad++, VS Code) o con un editor visual.</li>
     </ul>
     <h3 style="margin-top: 16px;">🔗 Cómo conseguir tu API key</h3>
     <ul>
       <li><b>Google Gemini</b> (gratis): <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></li>
-      <li><b>Groq</b> (gratis): <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a></li>
-      <li><b>OpenRouter</b> (algunos modelos gratis): <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a></li>
-      <li><b>DeepSeek</b> (de pago): <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com/api_keys</a></li>
-      <li><b>OpenAI</b> (de pago): <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></li>
     </ul>
   </div>
 </div>
@@ -450,37 +434,9 @@ const PROVEEDORES = {
   gemini: {
     nombre: "Google Gemini", formato: "gemini",
     endpoint: "https://generativelanguage.googleapis.com/v1beta/models",
-    modelos: ["gemini-3.5-flash","gemini-3-flash-preview","gemini-3.5-flash-lite","gemini-3.1-flash-lite"],
+    modelos: ["gemini-3.8-flash","gemini-3.7-flash","gemini-3.6-flash","gemini-3.5-flash","gemini-3.5-flash-lite","gemini-3.1-flash-lite"],
     pdfNativo: true, requiereKey: true,
     keyUrl: "https://aistudio.google.com/apikey"
-  },
-  groq: {
-    nombre: "Groq", formato: "openai",
-    endpoint: "https://api.groq.com/openai/v1/chat/completions",
-    modelos: ["openai/gpt-oss-120b","qwen/qwen3.8-27b","openai/gpt-oss-safeguard-20b","openai/gpt-oss-20b"],
-    pdfNativo: false, requiereKey: true,
-    keyUrl: "https://console.groq.com/keys"
-  },
-  openrouter: {
-    nombre: "OpenRouter", formato: "openai",
-    endpoint: "https://openrouter.ai/api/v1/chat/completions",
-    modelos: ["nvidia/nemotron-3-ultra-550b-a55b:free","qwen/qwen3.8-27b:free","nvidia/nemotron-3-super-120b-a12b:free","nvidia/nemotron-3.5-lightning:free","dots-studio/dots-3-note-preview:free","google/gemini-2.0-flash-exp:free","meta-llama/llama-3.3-70b-instruct:free","deepseek/deepseek-chat"],
-    pdfNativo: false, requiereKey: true,
-    keyUrl: "https://openrouter.ai/keys"
-  },
-  deepseek: {
-    nombre: "DeepSeek", formato: "openai",
-    endpoint: "https://api.deepseek.com/v1/chat/completions",
-    modelos: ["deepseek-chat","deepseek-reasoner"],
-    pdfNativo: false, requiereKey: true,
-    keyUrl: "https://platform.deepseek.com/api_keys"
-  },
-  openai: {
-    nombre: "OpenAI", formato: "openai",
-    endpoint: "https://api.openai.com/v1/chat/completions",
-    modelos: ["gpt-4o-mini","gpt-4o","gpt-4-turbo"],
-    pdfNativo: false, requiereKey: true,
-    keyUrl: "https://platform.openai.com/api-keys"
   }
 };
 
@@ -624,19 +580,33 @@ async function callConFallback(proveedor, apiKey, prompt, pdfBase64, onStatus) {
   const errores = [];
   for (let i = 0; i < modelos.length; i++) {
     const model = modelos[i];
-    try {
-      onStatus(`🤖 Probando ${model} (${i + 1}/${modelos.length})...`);
-      let text;
-      if (cfg.formato === "gemini") {
-        text = await callGemini(apiKey, model, prompt, cfg.pdfNativo ? pdfBase64 : null);
-      } else {
-        text = await callOpenAICompatible(apiKey, cfg.endpoint, model, prompt);
+    let intentos = 0;
+    const maxIntentos = 2; // inicial + 1 reintento
+    while (intentos < maxIntentos) {
+      try {
+        onStatus(`🤖 Probando ${model} (${i + 1}/${modelos.length}) intento ${intentos + 1}/${maxIntentos}...`);
+        let text;
+        if (cfg.formato === "gemini") {
+          text = await callGemini(apiKey, model, prompt, cfg.pdfNativo ? pdfBase64 : null);
+        } else {
+          text = await callOpenAICompatible(apiKey, cfg.endpoint, model, prompt);
+        }
+        return { text, model };
+      } catch (e) {
+        errores.push(e?.message || String(e));
+        if (e?.status === 400 || e?.status === 403) throw e;
+        intentos++;
+        if (intentos < maxIntentos) {
+          onStatus(`⏳ ${model} falló, esperando 2s antes de reintentar...`);
+          await new Promise(r => setTimeout(r, 2000));
+        } else {
+          // Reintento agotado: esperar un poco antes de cambiar a respaldo
+          if (i < modelos.length - 1) {
+            onStatus(`⏳ ${model} falló tras reintento; cambiando al siguiente modelo (${modelos[i + 1]}) en 1s...`);
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        }
       }
-      return { text, model };
-    } catch (e) {
-      errores.push(e?.message || String(e));
-      if (e?.status === 400 || e?.status === 403) throw e;
-      continue;
     }
   }
   throw new Error("Todos los modelos fallaron:\n" + errores.join("\n"));
