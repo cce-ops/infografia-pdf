@@ -29,9 +29,6 @@ https://infografia-pdf.netlify.app/
 | Proveedor | Key gratis | PDF nativo |
 |---|---|---|
 | Google Gemini | ✅ [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | ✅ |
-| Groq | ✅ [console.groq.com/keys](https://console.groq.com/keys) | ❌ (extrae texto) |
-| OpenRouter | ✅ [openrouter.ai/keys](https://openrouter.ai/keys) | ❌ |
-| DeepSeek | ❌ | ❌ |
-| OpenAI | ❌ | ❌ |
+
 
 
