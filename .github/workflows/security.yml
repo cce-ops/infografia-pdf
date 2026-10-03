@@ -1,0 +1,81 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  schedule:
+    - cron: '0 2 * * 1'  # Semanal lunes 2AM UTC
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  secrets:
+    name: Secret Detection (TruffleHog)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ""
+          head: ${{ github.sha }}
+          extra_args: --json --fail
+
+  sast:
+    name: Static Analysis (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: auto
+          args: --error --json=semgrep-results.json
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      - name: Upload Semgrep results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.json
+          category: semgrep
+
+  # Verify Subresource Integrity on external scripts
+  sri-check:
+    name: Subresource Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify SRI attributes
+        run: |
+          echo "Verifying Subresource Integrity on external scripts..."
+          # Check all script tags with external sources
+          MISSING=$(grep -E 'src="https://' index.html | grep -v 'integrity=' || true)
+          if [ -n "$MISSING" ]; then
+            echo "::error::Found external scripts WITHOUT integrity attribute:"
+            echo "$MISSING"
+            exit 1
+          else
+            echo "✅ All external scripts have integrity attributes"
+          fi
+          
+          # Verify worker integrity for pdf.js
+          WORKER_INTEGRITY=$(grep -A2 'GlobalWorkerOptions' index.html | grep 'workerSrcIntegrity' || true)
+          if [ -z "$WORKER_INTEGRITY" ]; then
+            echo "::warning::pdf.js worker integrity not explicitly set (optional but recommended)"
+          else
+            echo "✅ pdf.js worker has integrity attribute"
+          fi
